@@ -1,0 +1,31 @@
+{
+  "name": "crudify",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "devStart": "nodemon server.js",
+    "devStop": "pkill -f 'nodemon server.js'",
+    "devLogs": "tail -f /path/to/your/logs",
+    "devRestart": "pkill -f 'nodemon server.js' && npm run devStart",
+    "prodStart": "pm2 start server.js",
+    "prodStop": "pm2 stop server.js",
+    "prodDelete": "pm2 delete server.js",
+    "prodLogs": "pm2 logs server.js",
+    "prodRestart": "pm2 restart server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "pm2": "^5.4.3"
+  }
+}
