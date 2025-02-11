@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    environment {
+        SSH_KEY = credentials('SSH_PRIVATE_KEY')
+        VM_IP = '20.106.201.191'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Set up SSH') {
+            steps {
+                script {
+                    sh """
+                        mkdir -p ~/.ssh
+                        echo '${SSH_KEY}' > ~/.ssh/id_rsa
+                        chmod 600 ~/.ssh/id_rsa
+                        ssh-keyscan -t rsa ${VM_IP} >> ~/.ssh/known_hosts
+                    """
+                }
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Deploy to Azure VM') {
+            steps {
+                script {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa azureuser@${VM_IP} << 'EOF'
+                          sudo apt update -y
+                          sudo apt upgrade -y
+                          cd /home/azureuser/crudify || exit
+                          git pull origin master
+                          npm install
+                          pm2 restart app.js || pm2 start app.js
+                        EOF
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment succeeded'
+        }
+        failure {
+            echo 'Deployment failed'
+        }
+    }
+}
