@@ -1,5 +1,5 @@
 # Create User
-POST http://4.255.43.89:3000/users
+POST http://4.157.146.125:3000/users
 Content-Type: application/json
 
 {
