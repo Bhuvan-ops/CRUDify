@@ -16,7 +16,7 @@ form {
     margin-bottom: 20px;
 }
 
-input[type="text"], input[type="email"], input[type="number"] {
+input[type="text"], input[type="email"] {
     padding: 8px;
     margin: 10px;
     width: 200px;
