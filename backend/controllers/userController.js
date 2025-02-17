@@ -1,9 +1,12 @@
 const User = require('../models/userModel');
 
 exports.createUser = async (req, res) => {
-  const { name, email, age } = req.body;
+  const { username, email, age, phonenumber, password, role } = req.body;
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin role required to create a user' });
+  }
   try {
-    const newUser = new User({ name, email, age });
+    const newUser = new User({ username, email, age, phonenumber, password, role });
     await newUser.save();
     res.status(201).json(newUser);
   } catch (err) {
@@ -33,9 +36,12 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, email, age } = req.body;
+  const { username, email, age, phonenumber, password, role } = req.body;
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin role required to update a user' });
+  }
   try {
-    const updatedUser = await User.findByIdAndUpdate(id, { name, email, age }, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(id, { username, email, age, phonenumber, password, role }, { new: true });
     if (!updatedUser) return res.status(404).json({ error: 'User not found' });
     res.status(200).json(updatedUser);
   } catch (err) {
@@ -45,6 +51,9 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   const { id } = req.params;
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin role required to delete a user' });
+  }
   try {
     const deletedUser = await User.findByIdAndDelete(id);
     if (!deletedUser) return res.status(404).json({ error: 'User not found' });

@@ -3,10 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const userRoutes = require('./backend/routes/userRoutes');
+const authRoutes = require('./backend/routes/authRoutes');
 const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6000;
 
 app.use(cors());
 app.use(express.static('frontend'));
@@ -21,7 +22,7 @@ mongoose.connect(process.env.MONGO_URI, {
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.log('MongoDB connection error:', err));
 
-app.use('/users', userRoutes);
+app.use('/users', userRoutes, authRoutes);
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/frontend/homepage.html');
